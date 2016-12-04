@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <!-- Required meta tags always come first -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>Memster</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/memster.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row container-row">
+            <div class="col-md-2 red sidebar">
+                <div class="row text-center logo">
+                    <a href="./"><img src="./img/prozr-256.png"></a>
+                </div>
+                <div class="row userinfo">
+                    <div class="col-md-12">
+                        <div class="userpic">
+                            <img id="userinfo-avatar" src="./img/camera.png">
+                        </div>
+                        <div class="username">
+                            <p id="userinfo-name">Твое имя тут</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row sidebar-menu">
+                    <ul class="nav nav-pills nav-stacked">
+                        <li><a href="./upload.html">Новая картинка</a></li>
+                        <!--<li><a href="#">Новый альбом</a></li>-->
+                        <li><a href="#">Редактировать профиль</a></li>
+                        <!--<li><a href="#">Сменить пароль</a></li>-->
+                        <li><a href="./restore.html">Восстановить пароль</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-10 content-container">
+                <div class="row">
+                    <div class="col-md-12 content-nav">
+                        <nav class="navbar">
+                            <div class="container-fluid">
+                                <ul class="nav navbar-nav">
+                                    <li><a href="./">На главную</a></li>
+                                    <li><a href="./register.html">Зарегистрироваться</a></li>
+                                    <li><a href="./restore.html">Восстановить пароль</a></li>
+                                    <li><a href="./about.html">О нас</a></li>
+                                    <li><a href="./rules.html">Правила сайта</a></li>
+                                </ul>
+                                <ul class="nav navbar-nav navbar-right">
+                                    <li><a id='login-logout-btn' href="./login.html"><span class="glyphicon glyphicon-log-in"></span> <span id='login-logout-text'>Войти</span></a></li>
+                                </ul>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+                <div class="row">
+                    <!--<div class="col-md-12 content-search">-->
+                    <!--    <div class="input-group">-->
+                    <!--        <input type="text" class="form-control" placeholder="Напиши сюда тег...">-->
+                    <!--        <span class="input-group-btn">-->
+                    <!--            <button class="btn btn-primary btn-secondary" type="button">Искать <span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>-->
+                    <!--        </span>-->
+                    <!--    </div>-->
+                    <!--</div>-->
+                </div>
+                <div class="row">
+                    <div class="col-md-12 random-pics" style="height: auto;">
+                        <div class="col-md-12">
+                            <style>
+                                .input-group {
+                                    margin-bottom: 15px;
+                                }
+                            </style>
+
+                            <h3 class="text-center">Загрузка изображения</h3>
+                            <div class="input-group">
+                                <span class="input-group-addon" id="basic-addon3">Заголовок</span>
+                                <input type="text" id="title" class="form-control" aria-describedby="basic-addon3">
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon" id="basic-addon3">Теги</span>
+                                <input type="text" id="tags" class="form-control" aria-describedby="basic-addon3">
+                            </div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" readonly>
+                                <label class="input-group-btn">
+                                    <span class="btn btn-primary">
+                                        Выбрать картинку&hellip; <input id="imageInput" accept="image/jpeg , image/png" type="file" style="display: none;">
+                                    </span>
+                                    <button id="uploadBtn" type="button" class="btn btn-primary">Загрузить</button>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 content-footer">
+                        <p>2016 @ Nadya Isaeva</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery first, then Tether, then Bootstrap JS. -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/memster.js"></script>
+</body>
+
+</html>
