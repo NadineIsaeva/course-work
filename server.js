@@ -1234,6 +1234,8 @@ app.get('/api/search', (req, res) => {
 
       res.send({
         'success': true,
+        'searchQuery': searchQuery,
+        'results': usrs.length,
         'users': usrs.map((u) => ({
           'login': u.owner,
           'name': u.name,
@@ -1255,20 +1257,79 @@ app.get('/api/search', (req, res) => {
 
       if (err) return console.log(err);
 
-      res.send({
-        'success': true,
-        'users': imgs.map((u) => ({
-          'login': u.owner,
-          'name': u.name,
-          'avatar': u.avatar,
-          'liked': u.liked
-        }))
-      });
+      albums.find({
+        'tags': {
+          '$regex': searchQuery.substr(1)
+        }
+      }).toArray((err, albms) => {
 
+        if (err) return console.log(err);
+
+        res.send({
+          'success': true,
+          'searchQuery': searchQuery,
+          'results': imgs.length + albms.length,
+          'images': imgs.map((i) => ({
+            'imageId': i._id,
+            'title': i.title,
+            'filename': i.filename,
+            'owner': i.owner,
+            'likes': i.likes,
+            'album': i.album,
+            'tags': i.tags
+          })),
+          'albums': albms.map((a) => ({
+            'albumId': a._id,
+            'title': a.title,
+            'cover': a.cover,
+            'owner': a.owner,
+            'tags': a.tags
+          }))
+        });
+      });
     });
 
   }
   else { // search by titles
+    images.find({
+      'title': {
+        '$regex': searchQuery.substr(1)
+      }
+    }).toArray((err, imgs) => {
+
+      if (err) return console.log(err);
+
+      albums.find({
+        'title': {
+          '$regex': searchQuery.substr(1)
+        }
+      }).toArray((err, albms) => {
+
+        if (err) return console.log(err);
+
+        res.send({
+          'success': true,
+          'searchQuery': searchQuery,
+          'results': imgs.length + albms.length,
+          'images': imgs.map((i) => ({
+            'imageId': i._id,
+            'title': i.title,
+            'filename': i.filename,
+            'owner': i.owner,
+            'likes': i.likes,
+            'album': i.album,
+            'tags': i.tags
+          })),
+          'albums': albms.map((a) => ({
+            'albumId': a._id,
+            'title': a.title,
+            'cover': a.cover,
+            'owner': a.owner,
+            'tags': a.tags
+          }))
+        });
+      });
+    });
 
   }
 
