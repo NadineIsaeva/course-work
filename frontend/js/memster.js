@@ -267,6 +267,7 @@ var memster = memster || {};
 			window.location.replace('./login.html');
 		}
 
+		$('#splash').fadeOut(500);
 	});
 
 })(memster);

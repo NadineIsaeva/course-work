@@ -155,9 +155,7 @@ app.post('/api/login', (req, res) => {
         'token': userObj.token
       });
     });
-
   });
-
 });
 
 app.post('/api/restore', (req, res) => {
