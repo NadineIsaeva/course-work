@@ -88,6 +88,91 @@ body,
     width: 60px;
 }
 
+.userinfo-big #userinfo-avatar-big {
+    border: 0px solid #fff;
+    border-radius: 100%;
+    /*vertical-align: middle;*/
+    /*max-height: 60px;*/
+    /*max-width: 60px;*/
+    height: 150px;
+    width: 150px;
+}
+
+.userinfo-big {
+    height: 250px;
+}
+
+.userinfo-big .userpic {
+    width: 100%;
+}
+
+.userinfo-big .username {
+    line-height: 150px;
+    margin: 0;
+    width: 100%;
+}
+
+.userinfo-big h2 {
+    margin-bottom: 30px;
+}
+
+.userinfo-big-second {
+    margin: 30px 0;
+}
+
+.userinfo-big-second span {
+    font-size: 120px;
+    color: #337ab7;
+}
+
+.userinfo-big-second p {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 15px 0;
+}
+
+.userinfo-big-second .stat-block {
+    cursor: pointer;
+}
+
+.userinfo-big-second .stat-block:hover span,
+.userinfo-big-second #liked:hover .count {
+    color: #3c763d;
+}
+
+.userinfo-big-second .count {
+    left: 72px;
+    position: absolute;
+    top: 80px;
+}
+
+.userinfo-big-second #albums .count {
+    left: 62px;
+    color: #fff;
+    top: 92px;
+    padding-left: 0;
+}
+
+.userinfo-big-second #albums p {
+    padding-left: 18px;
+}
+
+.userinfo-big-second #images .count {
+    left: 70px;
+    color: #fff;
+    top: 130px;
+}
+
+.userinfo-big-second #liked .count {
+    left: 74px;
+    color: #337ab7;
+}
+
+.userinfo-big-second #likes .count {
+    left: 74px;
+    color: #fff;
+}
+
 
 /*CONTENT NAV*/
 
