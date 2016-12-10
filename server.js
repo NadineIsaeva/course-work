@@ -69,7 +69,6 @@ const express = require('express');
 const passwordHash = require('password-hash');
 const uuid = require('uuid');
 const multer = require('multer');
-const mongodb = require('mongodb');
 const mongoClient = require('mongodb').MongoClient;
 
 //
@@ -475,8 +474,9 @@ app.post('/api/:token/image', (req, res) => {
       if (err) return console.log(err);
 
       let imageObj = {
-        'filename': req.file.filename,
+        'id': uuid(),
         'owner': userObj.login,
+        'filename': req.file.filename,
         'title': title,
         'likes': 0,
         'album': albumId,
@@ -491,11 +491,15 @@ app.post('/api/:token/image', (req, res) => {
 
         res.send({
           'success': true,
-          'title': title,
-          'filename': imageObj.filename,
-          'imageId': imageObj._id,
-          'albumId': albumId,
-          'tags': imageObj.tags
+          'image': {
+            'id': imageObj.id,
+            'owner': imageObj.owner,
+            'filename': imageObj.filename,
+            'title': imageObj.title,
+            'likes': imageObj.likes,
+            'album': imageObj.album,
+            'tags': imageObj.tags
+          }
         });
       });
     })
@@ -507,18 +511,8 @@ app.get('/api/image/:imageId', (req, res) => {
 
   let imageId = req.params.imageId;
 
-  try {
-    var imageIdMongo = new mongodb.ObjectID(imageId);
-  }
-  catch (exception) {
-    res.send({
-      'error': 'Wrong imageId'
-    });
-    return console.log(exception);
-  }
-
   images.find({
-    '_id': imageIdMongo
+    'id': imageId
   }).limit(1).next((err, imageObj) => {
 
     if (err) return console.log(err);
@@ -533,10 +527,10 @@ app.get('/api/image/:imageId', (req, res) => {
     res.send({
       'success': true,
       'image': {
-        'imageId': imageObj._id,
-        'title': imageObj.title,
-        'filename': imageObj.filename,
+        'id': imageObj.id,
         'owner': imageObj.owner,
+        'filename': imageObj.filename,
+        'title': imageObj.title,
         'likes': imageObj.likes,
         'album': imageObj.album,
         'tags': imageObj.tags
@@ -565,18 +559,8 @@ app.post('/api/:token/image/:imageId', (req, res) => {
       return;
     }
 
-    try {
-      var imageIdMongo = new mongodb.ObjectID(imageId);
-    }
-    catch (exception) {
-      res.send({
-        'error': 'Wrong imageId'
-      });
-      return console.log(exception);
-    }
-
     images.find({
-      '_id': imageIdMongo
+      'id': imageId
     }).limit(1).next((err, imageObj) => {
 
       if (err) return console.log(err);
@@ -607,9 +591,15 @@ app.post('/api/:token/image/:imageId', (req, res) => {
 
         res.send({
           'success': true,
-          'title': imageObj.title,
-          'album': imageObj.album,
-          'tags': imageObj.tags
+          'image': {
+            'id': imageObj.id,
+            'owner': imageObj.owner,
+            'filename': imageObj.filename,
+            'title': imageObj.title,
+            'likes': imageObj.likes,
+            'album': imageObj.album,
+            'tags': imageObj.tags
+          }
         });
       });
     });
@@ -635,18 +625,8 @@ app.get('/api/:token/image/:imageId/delete', (req, res) => {
       return;
     }
 
-    try {
-      var imageIdMongo = new mongodb.ObjectID(imageId);
-    }
-    catch (exception) {
-      res.send({
-        'error': 'Wrong imageId'
-      });
-      return console.log(exception);
-    }
-
     images.find({
-      '_id': imageIdMongo
+      'id': imageId
     }).limit(1).next((err, imageObj) => {
 
       if (err) return console.log(err);
@@ -666,7 +646,7 @@ app.get('/api/:token/image/:imageId/delete', (req, res) => {
       }
 
       images.deleteOne({
-        '_id': imageIdMongo
+        'id': imageId
       }, (err, result) => {
 
         if (err) return console.log(err);
@@ -707,10 +687,10 @@ app.get('/api/:login/images', (req, res) => {
       res.send({
         'success': true,
         'images': imgs.map((i) => ({
-          'imageId': i._id,
-          'title': i.title,
-          'filename': i.filename,
+          'id': i.id,
           'owner': i.owner,
+          'filename': i.filename,
+          'title': i.title,
           'likes': i.likes,
           'album': i.album,
           'tags': i.tags
@@ -745,6 +725,7 @@ app.post('/api/:token/album', (req, res) => {
     }
 
     let albumObj = {
+      'id': uuid(),
       'owner': userObj.login,
       'title': title,
       'cover': null,
@@ -759,10 +740,13 @@ app.post('/api/:token/album', (req, res) => {
 
       res.send({
         'success': true,
-        'title': title,
-        'albumId': albumObj._id,
-        'cover': null,
-        'tags': albumObj.tags
+        'album': {
+          'id': albumObj.id,
+          'owner': albumObj.owner,
+          'title': albumObj.title,
+          'cover': albumObj.cover,
+          'tags': albumObj.tags
+        }
       });
     });
   });
@@ -773,18 +757,8 @@ app.get('/api/album/:albumId', (req, res) => {
 
   let albumId = req.params.albumId;
 
-  try {
-    var albumIdMongo = new mongodb.ObjectID(albumId);
-  }
-  catch (exception) {
-    res.send({
-      'error': 'Wrong imageId'
-    });
-    return console.log(exception);
-  }
-
   albums.find({
-    '_id': albumIdMongo
+    'id': albumId
   }).limit(1).next((err, albumObj) => {
 
     if (err) return console.log(err);
@@ -803,18 +777,22 @@ app.get('/api/album/:albumId', (req, res) => {
 
       res.send({
         'success': true,
-        'title': albumObj.title,
-        'cover': albumObj.cover,
-        'tags': albumObj.tags,
-        'images': imgs.map((i) => ({
-          'imageId': i._id,
-          'title': i.title,
-          'filename': i.filename,
-          'owner': i.owner,
-          'likes': i.likes,
-          'album': i.album,
-          'tags': i.tags
-        }))
+        'album': {
+          'id': albumObj.id,
+          'owner': albumObj.owner,
+          'title': albumObj.title,
+          'cover': albumObj.cover,
+          'tags': albumObj.tags,
+          'images': imgs.map((i) => ({
+            'id': i.id,
+            'owner': i.owner,
+            'filename': i.filename,
+            'title': i.title,
+            'likes': i.likes,
+            'album': i.album,
+            'tags': i.tags
+          }))
+        }
       });
     });
   });
@@ -840,18 +818,8 @@ app.post('/api/:token/album/:albumId', (req, res) => {
       return;
     }
 
-    try {
-      var albumIdMongo = new mongodb.ObjectID(albumId);
-    }
-    catch (exception) {
-      res.send({
-        'error': 'Wrong imageId'
-      });
-      return console.log(exception);
-    }
-
     albums.find({
-      '_id': albumIdMongo
+      'id': albumId
     }).limit(1).next((err, albumObj) => {
 
       if (err) return console.log(err);
@@ -881,9 +849,13 @@ app.post('/api/:token/album/:albumId', (req, res) => {
 
           res.send({
             'success': true,
-            'title': albumObj.title,
-            'cover': albumObj.cover,
-            'tags': albumObj.tags
+            'album': {
+              'id': albumObj.id,
+              'owner': albumObj.owner,
+              'title': albumObj.title,
+              'cover': albumObj.cover,
+              'tags': albumObj.tags
+            }
           });
         });
       });
@@ -910,18 +882,8 @@ app.get('/api/:token/album/:albumId/delete', (req, res) => {
       return;
     }
 
-    try {
-      var albumIdMongo = new mongodb.ObjectID(albumId);
-    }
-    catch (exception) {
-      res.send({
-        'error': 'Wrong albumId'
-      });
-      return console.log(exception);
-    }
-
     albums.find({
-      '_id': albumIdMongo
+      'id': albumId
     }).limit(1).next((err, albumObj) => {
 
       if (err) return console.log(err);
@@ -941,7 +903,7 @@ app.get('/api/:token/album/:albumId/delete', (req, res) => {
       }
 
       albums.deleteOne({
-        '_id': albumIdMongo
+        'id': albumId
       }, (err, result) => {
 
         if (err) return console.log(err);
@@ -988,11 +950,11 @@ app.get('/api/:login/albums', (req, res) => {
 
       res.send({
         'success': true,
-        'albms': albms.map((a) => ({
-          'albumId': a._id,
+        'albums': albms.map((a) => ({
+          'id': a.id,
+          'owner': a.owner,
           'title': a.title,
           'cover': a.cover,
-          'owner': a.owner,
           'tags': a.tags
         }))
       });
@@ -1034,17 +996,15 @@ app.get('/api/random/pictures', (req, res) => {
 
     res.send({
       'success': true,
-      'images': randomPics.map((i) => {
-        return {
-          'imageId': i._id,
-          'title': i.title,
-          'filename': i.filename,
-          'owner': i.owner,
-          'likes': i.likes,
-          'album': i.album,
-          'tags': i.tags
-        };
-      })
+      'images': randomPics.map((i) => ({
+        'id': i.id,
+        'owner': i.owner,
+        'filename': i.filename,
+        'title': i.title,
+        'likes': i.likes,
+        'album': i.album,
+        'tags': i.tags
+      }))
     });
   });
 });
@@ -1078,15 +1038,13 @@ app.get('/api/random/albums', (req, res) => {
 
     res.send({
       'success': true,
-      'albums': randomPics.map((a) => {
-        return {
-          'albumId': a._id,
-          'owner': a.owner,
-          'title': a.title,
-          'cover': a.cover,
-          'tags': a.tags
-        };
-      })
+      'albums': randomPics.map((a) => ({
+        'id': a.id,
+        'owner': a.owner,
+        'title': a.title,
+        'cover': a.cover,
+        'tags': a.tags
+      }))
     });
   });
 });
@@ -1110,18 +1068,8 @@ app.get('/api/:token/image/:imageId/like', (req, res) => {
       return;
     }
 
-    try {
-      var imageIdMongo = new mongodb.ObjectID(imageId);
-    }
-    catch (exception) {
-      res.send({
-        'error': 'Wrong imageId'
-      });
-      return console.log(exception);
-    }
-
     images.find({
-      '_id': imageIdMongo
+      'id': imageId
     }).limit(1).next((err, imageObj) => {
 
       if (err) return console.log(err);
@@ -1173,8 +1121,15 @@ app.get('/api/:token/image/:imageId/like', (req, res) => {
 
             res.send({
               'success': true,
-              'likes': imageObj.likes,
-              'liked': userInfoObj.liked
+              'image': {
+                'id': imageObj.id,
+                'owner': imageObj.owner,
+                'filename': imageObj.filename,
+                'title': imageObj.title,
+                'likes': imageObj.likes,
+                'album': imageObj.album,
+                'tags': imageObj.tags
+              }
             });
           });
         });
@@ -1270,19 +1225,19 @@ app.get('/api/search', (req, res) => {
           'searchQuery': searchQuery,
           'results': imgs.length + albms.length,
           'images': imgs.map((i) => ({
-            'imageId': i._id,
-            'title': i.title,
-            'filename': i.filename,
+            'id': i.id,
             'owner': i.owner,
+            'filename': i.filename,
+            'title': i.title,
             'likes': i.likes,
             'album': i.album,
             'tags': i.tags
           })),
           'albums': albms.map((a) => ({
-            'albumId': a._id,
+            'id': a.id,
+            'owner': a.owner,
             'title': a.title,
             'cover': a.cover,
-            'owner': a.owner,
             'tags': a.tags
           }))
         });
@@ -1312,19 +1267,19 @@ app.get('/api/search', (req, res) => {
           'searchQuery': searchQuery,
           'results': imgs.length + albms.length,
           'images': imgs.map((i) => ({
-            'imageId': i._id,
-            'title': i.title,
-            'filename': i.filename,
+            'id': i.id,
             'owner': i.owner,
+            'filename': i.filename,
+            'title': i.title,
             'likes': i.likes,
             'album': i.album,
             'tags': i.tags
           })),
           'albums': albms.map((a) => ({
-            'albumId': a._id,
+            'id': a.id,
+            'owner': a.owner,
             'title': a.title,
             'cover': a.cover,
-            'owner': a.owner,
             'tags': a.tags
           }))
         });
@@ -1344,6 +1299,49 @@ mongoClient.connect('mongodb://localhost:27017/memsterdb', (err, database) => {
   usersData = db.collection('usersData');
   images = db.collection('images');
   albums = db.collection('albums');
+
+  //////////////////////////////////
+  // Memster data model
+  //
+  // User: 
+  // {
+  //   'login': string, 
+  //   'password': string,
+  //   'token': string,
+  //   'secret': array of numbers,
+  //   'role': string
+  // }
+  //
+  // UserInfo: 
+  // {
+  //   'owner': string, 
+  //   'name': string,
+  //   'avatar': string,
+  //   'liked': array of strings
+  // }
+  //
+  // Image: 
+  // {
+  //   'id': string,
+  //   'owner': string,
+  //   'filename': string,
+  //   'title': string,
+  //   'likes': number,
+  //   'album': string,
+  //   'tags': string
+  // }
+  //
+  // Album: 
+  // {
+  //   'id': string,
+  //   'owner': string, 
+  //   'title': string,
+  //   'cover': string,
+  //   'tags': string
+  // }
+  //
+  /////////////////////////////////
+
 
   console.log("Memster database connected");
 

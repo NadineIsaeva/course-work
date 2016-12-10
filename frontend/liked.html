@@ -9,6 +9,7 @@
 
     <title>Memster</title>
 
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/memster.css">
 </head>
@@ -33,9 +34,11 @@
                 </div>
                 <div class="row sidebar-menu">
                     <ul class="nav nav-pills nav-stacked">
-                        <li><a href="./uploadImage.html">Новая картинка</a></li>
-                        <li><a href="./createAlbum.html">Новый альбом</a></li>
-                        <li><a href="./editprofile.html">Редактировать профиль</a></li>
+                        <li><a href="./upload.html">Новая картинка</a></li>
+                        <!--<li><a href="#">Новый альбом</a></li>-->
+                        <li><a href="#">Редактировать профиль</a></li>
+                        <!--<li><a href="#">Сменить пароль</a></li>-->
+                        <li><a href="./restore.html">Восстановить пароль</a></li>
                     </ul>
                 </div>
             </div>
@@ -70,15 +73,91 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12 random-pics">
-                        <h3 class="text-center">Случайные пикчи</h3>
+                    <div class="col-md-12 userinfo-big">
+                        <h2 class="text-center">Картинки которые понравились <a>@username</a> (мне)</h2>
                         <div class="col-md-1">
                             <!--<div class="album-list-control list-control-left">-->
                             <!--    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>-->
                             <!--</div>-->
                         </div>
                         <div class="col-md-10">
-                            <div class="row" id="random-pics-content">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="thumbnail">
+                                        <img src="./img/camera.png">
+                                        <div class="caption">
+                                            <p>{{img-title}}</p>
+                                            <a href="#" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span> <span class='likes'>{{img-likes}}</span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="thumbnail">
+                                        <img src="./img/camera.png">
+                                        <div class="caption">
+                                            <p>{{img-title}}</p>
+                                            <a href="#" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span> <span class='likes'>{{img-likes}}</span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="thumbnail">
+                                        <img src="./img/camera.png">
+                                        <div class="caption">
+                                            <p>{{img-title}}</p>
+                                            <a href="#" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span> <span class='likes'>{{img-likes}}</span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="thumbnail">
+                                        <img src="./img/camera.png">
+                                        <div class="caption">
+                                            <p>{{img-title}}</p>
+                                            <a href="#" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span> <span class='likes'>{{img-likes}}</span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="thumbnail">
+                                        <img src="./img/camera.png">
+                                        <div class="caption">
+                                            <p>{{img-title}}</p>
+                                            <a href="#" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span> <span class='likes'>{{img-likes}}</span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="thumbnail">
+                                        <img src="./img/camera.png">
+                                        <div class="caption">
+                                            <p>{{img-title}}</p>
+                                            <a href="#" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span> <span class='likes'>{{img-likes}}</span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="thumbnail">
+                                        <img src="./img/camera.png">
+                                        <div class="caption">
+                                            <p>{{img-title}}</p>
+                                            <a href="#" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span> <span class='likes'>{{img-likes}}</span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="thumbnail">
+                                        <img src="./img/camera.png">
+                                        <div class="caption">
+                                            <p>{{img-title}}</p>
+                                            <a href="#" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span> <span class='likes'>{{img-likes}}</span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-3">
                                     <div class="thumbnail">
                                         <img src="./img/camera.png">
@@ -122,66 +201,11 @@
                             <!--    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>-->
                             <!--</div>-->
                         </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12 random-albums">
-                        <h3 class="text-center">Случайные альбомы</h3>
-                        <div class="col-md-1">
-                            <!--<div class="album-list-control list-control-left">-->
-                            <!--    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>-->
-                            <!--</div>-->
-                        </div>
-                        <div class="col-md-10">
-                            <div class="row" id="random-albums-content">
-                                <div class="col-md-3">
-                                    <div class="thumbnail">
-                                        <img src="./img/camera.png">
-                                        <div class="caption">
-                                            <p>{{img-title}}</p>
-                                            <a href="#" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span> <span class='likes'>{{img-likes}}</span></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="thumbnail">
-                                        <img src="./img/camera.png">
-                                        <div class="caption">
-                                            <p>{{img-title}}</p>
-                                            <a href="#" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span> <span class='likes'>{{img-likes}}</span></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="thumbnail">
-                                        <img src="./img/camera.png">
-                                        <div class="caption">
-                                            <p>{{img-title}}</p>
-                                            <a href="#" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span> <span class='likes'>{{img-likes}}</span></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="thumbnail">
-                                        <img src="./img/camera.png">
-                                        <div class="caption">
-                                            <p>{{img-title}}</p>
-                                            <a href="#" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span> <span class='likes'>{{img-likes}}</span></a>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div class="row">
+                            <div class="col-md-12 content-footer">
+                                <p>2016 @ Nadya Isaeva</p>
                             </div>
                         </div>
-                        <div class="col-md-1">
-                            <!--<div class="album-list-control list-control-right">-->
-                            <!--    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>-->
-                            <!--</div>-->
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12 content-footer">
-                        <p>2016 @ Nadya Isaeva</p>
                     </div>
                 </div>
             </div>

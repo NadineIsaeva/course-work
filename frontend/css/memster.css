@@ -34,10 +34,13 @@ body,
 /* SIDEBAR */
 
 .sidebar {
+    position: fixed;
+    width: 195px;
     height: 100%;
     padding-top: 15px;
     background-color: #337ab7;
     color: #fff;
+    padding: 15px;
 }
 
 .sidebar .logo img {
@@ -131,7 +134,7 @@ body,
     margin: 15px 0;
 }
 
-.userinfo-big-second .stat-block {
+.userinfo-big-second .stat-block span {
     cursor: pointer;
 }
 
@@ -221,6 +224,10 @@ body,
 
 .thumbnail {
     height: 285px;
+}
+
+.thumbnail-album {
+    height: 252px;
 }
 
 .thumbnail img {
