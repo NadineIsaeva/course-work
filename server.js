@@ -116,6 +116,7 @@ let uploadAvatar = multer({
 // Configuration
 //
 
+app.set('view engine', 'ejs');
 app.set('port', process.env.PORT || 8080);
 app.set('host', process.env.IP || "0.0.0.0");
 app.use(bodyParser.json());
@@ -123,7 +124,17 @@ app.use(express.static(path.resolve(__dirname, 'frontend')));
 app.use('/images', express.static(path.resolve(__dirname, 'data/images')));
 app.use('/avatars', express.static(path.resolve(__dirname, 'data/avatars')));
 
+//////////////////////////////////////////////
+//          M E M S T E R   S I T E         //
+//////////////////////////////////////////////
 
+app.get('/about', (req, res) => {
+  res.render('pages/about', {
+    head: {
+      title: "Memster - О нас"
+    },
+  });
+});
 
 //////////////////////////////////////////////
 //             R E S T   A P I              //
@@ -194,9 +205,7 @@ app.post('/api/register', (req, res) => {
 
         res.send({
           'success': true,
-          'name': name,
-          'secret': secret,
-          'token': token
+          'secret': secret
         });
       });
     });
@@ -245,6 +254,10 @@ app.post('/api/login', (req, res) => {
       }
 
       console.log('Someone logged: ' + JSON.stringify(userObj));
+
+      res.cookie('token', userObj.token, {
+        maxAge: 900000
+      });
 
       res.send({
         'success': true,
