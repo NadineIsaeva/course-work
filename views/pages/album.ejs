@@ -25,8 +25,8 @@
                             </p>
                             <p class="text-center">
                                 <% if (album.mine) { %>
-                                <a class="btn btn-sm btn-success" role="button">Редактировать <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
-                                <a class="btn btn-sm btn-danger" role="button">Удалить <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+                                <!--<a class="btn btn-sm btn-success" onclick="memster.editAlbum('<%=album.id%>');" role="button">Редактировать <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>-->
+                                <a class="btn btn-sm btn-danger" onclick="memster.deleteAlbum('<%=album.id%>');" role="button">Удалить <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
                                 <% } %>
                             </p>
                             <p>

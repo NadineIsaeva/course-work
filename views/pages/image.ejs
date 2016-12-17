@@ -26,7 +26,7 @@
                             <p class="text-center" id="<%=image.id%>">
                                 <a class="btn btn-sm btn-primary" onclick="memster.likePic('<%=image.id%>');" role="button"><b>Лайки</b> <span class="glyphicon glyphicon-heart" aria-hidden="true"></span> <span class='likes'><%=image.likes%></span></a>
                                 <% if (image.mine) { %>
-                                <a class="btn btn-sm btn-success" onclick="memster.editPic('<%=image.id%>');" role="button">Редактировать <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                                <!--<a class="btn btn-sm btn-success" onclick="memster.editPic('<%=image.id%>');" role="button">Редактировать <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>-->
                                 <a class="btn btn-sm btn-danger" onclick="memster.deletePic('<%=image.id%>');" role="button">Удалить <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
                                 <% } %>
                             </p>

@@ -41,7 +41,7 @@
                             
                             <div class="input-group">
                                 <span class="input-group-addon" id="basic-addon3">Имя</span>
-                                <input type="text" id="title" class="form-control" value="<%=user.name%>" aria-describedby="basic-addon3">
+                                <input type="text" id="name" class="form-control" data-prev="<%=user.name%>" value="<%=user.name%>" aria-describedby="basic-addon3">
                             </div>
                             <div class="input-group">
                                 <input type="text" class="form-control" readonly>
@@ -51,7 +51,7 @@
                                     </span>
                                 </label>
                             </div>
-                            <button id="uploadBtn" type="button" class="btn btn-primary">Изменить</button>
+                            <button id="editProfileBtn" type="button" class="btn btn-primary">Изменить</button>
                         </div>
                     </div>
                 </div>

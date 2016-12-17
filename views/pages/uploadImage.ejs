@@ -30,11 +30,11 @@
                             </div>
                             <div class="input-group">
                                 <span class="input-group-addon" id="basic-addon3">Альбом</span>
-                                <select class="form-control">
-                                  <option value="volvo">Volvo</option>
-                                  <option value="saab">Saab</option>
-                                  <option value="mercedes">Mercedes</option>
-                                  <option value="audi">Audi</option>
+                                <select id="album" class="form-control">
+                                    <option value="null">Без альбома</option>
+                                  <% for (let i = 0; i < albums.length; i++) { %>
+                                      <option value="<%=albums[i].id%>"><%=albums[i].title%></option>
+                                  <% } %>
                                 </select>
                             </div>
                             <div class="input-group">

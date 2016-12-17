@@ -616,13 +616,14 @@ app.get('/create/image', (req, res) => {
 
   let token = req.cookies.token || null;
 
-  let renderPage = (c, u) => {
+  let renderPage = (c, u, a) => {
     res.render('pages/uploadImage', {
       head: {
         title: 'Memster - Новая картинка'
       },
       cookie: c,
-      user: u
+      user: u,
+      albums: a
     });
   };
 
@@ -649,17 +650,17 @@ app.get('/create/image', (req, res) => {
 
       if (err) return console.log(err);
 
-      if (userInfoObj === null) {
-        res.cookie('token', '', {
-          maxAge: 0
-        });
-        return renderPage(false);
-      }
-
-      renderPage(true, {
-        login: userObj.login,
-        name: userInfoObj.name,
-        avatar: userInfoObj.avatar
+      albums.find({
+        'owner': userObj.login
+      }).toArray((err, albms) => {
+        
+        if (err) return console.log(err);
+        
+        renderPage(true, {
+          login: userObj.login,
+          name: userInfoObj.name,
+          avatar: userInfoObj.avatar
+        }, albms);
       });
     });
   });
@@ -1477,9 +1478,12 @@ app.get('/api/:login/userInfo', (req, res) => {
 
     res.send({
       'success': true,
-      'name': userInfoObj.name,
-      'avatar': userInfoObj.avatar,
-      'liked': userInfoObj.liked
+      'userInfo': {
+        'owner': userInfoObj.owner,
+        'name': userInfoObj.name,
+        'avatar': userInfoObj.avatar,
+        'liked': userInfoObj.liked
+      }
     });
   });
 });
@@ -1781,7 +1785,7 @@ app.get('/api/:token/image/:imageId/delete', (req, res) => {
         return;
       }
 
-      if (imageObj.owner !== userObj.login || userObj.role !== 'admin') {
+      if (imageObj.owner !== userObj.login && userObj.role !== 'admin') {
         res.send({
           'error': 'Permission denied'
         });
@@ -2054,7 +2058,7 @@ app.get('/api/:token/album/:albumId/delete', (req, res) => {
         return;
       }
 
-      if (albumObj.owner !== userObj.login || userObj.role !== 'admin') {
+      if (albumObj.owner !== userObj.login && userObj.role !== 'admin') {
         res.send({
           'error': 'Permission denied'
         });
