@@ -56,13 +56,13 @@ var memster = memster || {};
 			"password": password
 		};
 
-		postAjax("./api/login", reqJson, function(data) {
+		postAjax("/api/login", reqJson, function(data) {
 			if (data.error) {
 				alert(data.error);
 			}
 			else {
 				setToken(data.token);
-				window.location.replace('./');
+				window.location.replace('/');
 			}
 		});
 	}
@@ -82,14 +82,14 @@ var memster = memster || {};
 			"password": password
 		};
 
-		postAjax("./api/register", reqJson, function(data) {
+		postAjax("/api/register", reqJson, function(data) {
 			if (data.error) {
 				alert(data.error);
 			}
 			else {
 				setToken(data.token);
 				alert('Обязательно запишите эти цифры: ' + data.secret.join(' ') + '\nС их помощью вы сможете восстановить свой пароль!');
-				window.location.replace('./');
+				window.location.replace('/');
 			}
 		});
 	}
@@ -107,7 +107,7 @@ var memster = memster || {};
 			"password": password
 		};
 
-		postAjax("./api/restore", reqJson, function(data) {
+		postAjax("/api/restore", reqJson, function(data) {
 			if (data.error) {
 				alert(data.error);
 			}
@@ -139,15 +139,20 @@ var memster = memster || {};
 	}
 
 	m.likePic = function(imageId) {
+		
+		if (!isAuthorized()) {
+			window.location.replace('/login');
+		}
+		
 		$.ajax({
 			type: "GET",
-			url: "/api/" + getToken() + "/" + imageId + "/like",
+			url: "/api/" + getToken() + "/image/" + imageId + "/like",
 			success: function(data, textStatus, jqXHR) {
 
 				if (data.error) return console.log(data.error);
 
 				if (data.success) {
-					$('[data-imageId=' + imageId + ']').find('.likes').text(data.likes);
+					$('#' + imageId).find('.likes').text(data.image.likes);
 				}
 			}
 		});
@@ -157,16 +162,6 @@ var memster = memster || {};
 		$.ajax({
 			type: "GET",
 			url: "/api/random/pictures?limit=4",
-			success: function(data, textStatus, jqXHR) {
-				callback(data, textStatus, jqXHR);
-			}
-		});
-	}
-
-	function getUserInfo(callback) {
-		$.ajax({
-			type: "GET",
-			url: "/api/" + getToken() + "/userInfo",
 			success: function(data, textStatus, jqXHR) {
 				callback(data, textStatus, jqXHR);
 			}
@@ -185,7 +180,7 @@ var memster = memster || {};
 
 		$.ajax({
 			type: "POST",
-			url: "./api/" + token + "/image",
+			url: "/api/" + token + "/image",
 			data: formData,
 			cache: false,
 			contentType: false,

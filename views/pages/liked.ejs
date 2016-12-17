@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<% include ../partials/head %>
+
+<body>
+    <div id="splash"></div>
+    <div class="container">
+        <div class="row container-row">
+            <% include ../partials/sidebar %>
+            <div class="col-md-offset-2 col-md-10 content-container">
+                <% include ../partials/navbar %>
+                <div class="row">
+                    <div class="col-md-12 userinfo-big">
+                        <h2 class="text-center">Понравившиеся картинки <a href="/profile/<%=profile.login%>">@<%=profile.login%></a> <%=profile.mine ? "(мои)" : ""%></h2>
+                        <div class="col-md-10 col-md-offset-1">
+                            
+                            <% if (images.length === 0) { %>
+                                <p class="text-center">Мне пока ничего не понравилось =(</p>
+                            <% } %>
+                            
+                            <% for (let i = 0; i < images.length;) {%>
+                            <div class="row">
+                                <% for (let j = 0; j < 4 && (i + j < images.length);j++) {%>
+                                <div class="col-md-3" id="<%=images[i+j].id%>">
+                                    <div class="thumbnail">
+                                        <a href="/image/<%=images[i+j].id%>"><img src="/img/<%=images[i+j].filename%>"></a>
+                                        <div class="caption">
+                                            <p><%=images[i+j].title%></p>
+                                            <a onclick="memster.likePic('<%=images[i+j].id%>');" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span> <span class='likes'><%=images[i+j].likes%></span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% }%>
+                            </div>
+                            <% i+=4; %>
+                            <% }%>
+                            
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 content-footer">
+                                <p>2016 @ Nadya Isaeva</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<% include ../partials/footer %>

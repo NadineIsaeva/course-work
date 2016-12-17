@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<% include ../partials/head %>
+
+<body>
+    <div id="splash"></div>
+    <div class="container">
+        <div class="row container-row">
+            <% include ../partials/sidebar %>
+            <div class="col-md-offset-2 col-md-10 content-container">
+                <% include ../partials/navbar %>
+                <div class="row">
+                    <div class="col-md-12 userinfo-big">
+                        <h2 class="text-center">Альбомы <a href="/profile/<%=profile.login%>">@<%=profile.login%></a> <%=profile.mine ? "(мои)" : ""%></h2>
+                        <div class="col-md-10 col-md-offset-1">
+                            
+                            <% if (albums.length === 0) { %>
+                                <p class="text-center">У меня пока что нету альбомов =(</p>
+                            <% } %>
+                            
+                            <% for (let i = 0; i < albums.length;) {%>
+                            <div class="row">
+                                <% for (let j = 0; j < 4 && (i + j < albums.length);j++) {%>
+                                <div class="col-md-3" id="<%=albums[i+j].id%>">
+                                    <div class="thumbnail">
+                                        <a href="/album/<%=albums[i+j].id%>"><img src="/img/<%=albums[i+j].cover ? albums[i+j].cover : "camera.png"%>"></a>
+                                        <div class="caption">
+                                            <p><%=albums[i+j].title%></p>
+                                            <a href="/album/<%=albums[i+j].id%>" class="btn btn-primary" role="button">Открыть</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% }%>
+                            </div>
+                            <% i+=4; %>
+                            <% }%>
+                            
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 content-footer">
+                                <p>2016 @ Nadya Isaeva</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<% include ../partials/footer %>

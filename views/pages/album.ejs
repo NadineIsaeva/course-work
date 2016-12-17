@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<% include ../partials/head %>
+
+<body>
+    <div id="splash"></div>
+    <div class="container">
+        <div class="row container-row">
+            <% include ../partials/sidebar %>
+            <div class="col-md-offset-2 col-md-10 content-container">
+                <% include ../partials/navbar %>
+                <div class="row">
+                    <div class="col-md-12 random-pics" style="height: auto;">
+                        <div class="col-md-8 col-md-offset-2">
+                            <style>
+                                .input-group {
+                                    margin-bottom: 15px;
+                                }
+                            </style>
+
+                            <h3 class="text-center">Альбом: <%=album.title%> <%=album.mine ? "(мой)" : ""%></h3>
+                            <p class="text-center">
+                                <img src="/img/<%=album.cover ? album.cover : "camera.png"%>" style="max-width: 400px;">
+                            </p>
+                            <p class="text-center">
+                                <% if (album.mine) { %>
+                                <a class="btn btn-sm btn-success" role="button">Редактировать <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                                <a class="btn btn-sm btn-danger" role="button">Удалить <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+                                <% } %>
+                            </p>
+                            <p>
+                                <b>Владелец:</b> <%=album.owner%>
+                            </p>
+                            <p>
+                                <b>Теги:</b> <%=album.tags%>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 userinfo-big">
+                        <div class="col-md-10 col-md-offset-1">
+                            
+                            <% if (album.images.length === 0) { %>
+                                <p class="text-center">Тут пока что нету картиночек =(</p>
+                            <% } %>
+                            
+                            <% for (let i = 0; i < album.images.length;) {%>
+                            <div class="row">
+                                <% for (let j = 0; j < 4 && (i + j < album.images.length);j++) {%>
+                                <div class="col-md-3" id="<%=album.images[i+j].id%>">
+                                    <div class="thumbnail">
+                                        <a href="/image/<%=album.images[i+j].id%>"><img src="/img/<%=album.images[i+j].filename%>"></a>
+                                        <div class="caption">
+                                            <p><%=album.images[i+j].title%></p>
+                                            <a data-id="<%=album.images[i+j].id%>" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span> <span class='likes'><%=album.images[i+j].likes%></span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% }%>
+                            </div>
+                            <% i+=4; %>
+                            <% }%>
+                            
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 content-footer">
+                                <p>2016 @ Nadya Isaeva</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<% include ../partials/footer %>

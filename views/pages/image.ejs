@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<% include ../partials/head %>
+
+<body>
+    <div id="splash"></div>
+    <div class="container">
+        <div class="row container-row">
+            <% include ../partials/sidebar %>
+            <div class="col-md-offset-2 col-md-10 content-container">
+                <% include ../partials/navbar %>
+                <div class="row">
+                    <div class="col-md-12 random-pics" style="height: auto;">
+                        <div class="col-md-8 col-md-offset-2">
+                            <style>
+                                .input-group {
+                                    margin-bottom: 15px;
+                                }
+                            </style>
+
+                            <h3 class="text-center">Картинка: <%=image.title%> <%=image.mine ? "(моя)" : ""%></h3>
+                            <p class="text-center">
+                                <img src="/img/<%=image.filename%>" style="max-width: 400px;">
+                            </p>
+                            <p class="text-center">
+                                <a class="btn btn-sm btn-primary" onclick="memster.likePic('<%=image.id%>');" role="button"><b>Лайки</b> <span class="glyphicon glyphicon-heart" aria-hidden="true"></span> <span class='likes'><%=image.likes%></span></a>
+                                <% if (image.mine) { %>
+                                <a class="btn btn-sm btn-success" onclick="memster.editPic('<%=image.id%>');" role="button">Редактировать <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                                <a class="btn btn-sm btn-danger" onclick="memster.deletePic('<%=image.id%>');" role="button">Удалить <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+                                <% } %>
+                            </p>
+                            <p>
+                                <b>Владелец:</b> <%=image.owner%>
+                            </p>
+                            <p>
+                                <b>Альбом:</b> <%=image.album%>
+                            </p>
+                            <p>
+                                <b>Теги:</b> <%=image.tags%>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 content-footer">
+                        <p>2016 @ Nadya Isaeva</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<% include ../partials/footer %>

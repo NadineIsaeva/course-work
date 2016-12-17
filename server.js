@@ -123,7 +123,7 @@ app.set('host', process.env.IP || "0.0.0.0");
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(express.static(path.resolve(__dirname, 'frontend')));
-app.use('/images', express.static(path.resolve(__dirname, 'data/images')));
+app.use('/img', express.static(path.resolve(__dirname, 'data/images')));
 app.use('/avatars', express.static(path.resolve(__dirname, 'data/avatars')));
 
 //////////////////////////////////////////////
@@ -237,7 +237,7 @@ app.get('/profile/:login', (req, res) => {
 
         profile.images = imgs.length;
         if (imgs.length > 0) {
-          profile.likes = imgs.reduce((a, b) => a.likes + b.likes);
+          profile.likes = imgs.map((i) => i.likes).reduce((a, b) => a + b);
         }
 
         albums.find({
@@ -251,7 +251,7 @@ app.get('/profile/:login', (req, res) => {
           if (token === null) {
             return renderPage(false, null, profile);
           }
-          
+
           users.find({
             'token': token
           }).limit(1).next((err, userObj) => {
@@ -627,7 +627,7 @@ app.get('/create/image', (req, res) => {
   };
 
   if (token === null) {
-    return res.redirect(401, '/login');
+    return res.redirect('/login');
   }
 
   users.find({
@@ -680,7 +680,7 @@ app.get('/create/album', (req, res) => {
   };
 
   if (token === null) {
-    return res.redirect(401, '/login');
+    return res.redirect('/login');
   }
 
   users.find({
@@ -733,7 +733,7 @@ app.get('/edit/profile', (req, res) => {
   };
 
   if (token === null) {
-    return res.redirect(401, '/login');
+    return res.redirect('/login');
   }
 
   users.find({
@@ -766,6 +766,492 @@ app.get('/edit/profile', (req, res) => {
         login: userObj.login,
         name: userInfoObj.name,
         avatar: userInfoObj.avatar
+      });
+    });
+  });
+});
+
+app.get('/image/:imageId', (req, res) => {
+
+  let token = req.cookies.token || null;
+  let imageId = req.params.imageId || null;
+
+  let renderPage = (c, u, i) => {
+    res.render('pages/image', {
+      head: {
+        title: 'Memster - ' + i.title
+      },
+      cookie: c,
+      user: u,
+      image: i
+    });
+  };
+
+  images.find({
+    'id': imageId
+  }).limit(1).next((err, imageObj) => {
+
+    if (err) return console.log(err);
+
+    if (imageObj === null) {
+      return res.redirect('/404');
+    }
+
+
+    let image = {
+      mine: false,
+      title: imageObj.title,
+      album: imageObj.album,
+      tags: imageObj.tags,
+      likes: imageObj.likes,
+      filename: imageObj.filename,
+      owner: imageObj.owner
+    };
+
+    users.find({
+      'login': imageObj.owner
+    }).limit(1).next((err, userObj) => {
+      if (err) return console.log(err);
+
+      if (userObj === null) {
+        return res.redirect('/404');
+      }
+
+      image.mine = userObj.token === token;
+
+      albums.find({
+        'id': image.album
+      }).limit(1).next((err, albumObj) => {
+
+        if (err) return console.log(err);
+
+        if (albumObj === null) {
+          image.album = 'Без альбома';
+        }
+        else {
+          image.album = albumObj.title;
+        }
+
+        if (token === null) {
+          return renderPage(false, null, image);
+        }
+
+        users.find({
+          'token': token
+        }).limit(1).next((err, userObj) => {
+
+          if (err) return console.log(err);
+
+          if (userObj === null) {
+            res.cookie('token', '', {
+              maxAge: 0
+            });
+            return renderPage(false, null, image);
+          }
+
+          usersData.find({
+            'owner': userObj.login
+          }).limit(1).next((err, userInfoObj) => {
+
+            if (err) return console.log(err);
+
+            if (userInfoObj === null) {
+              res.cookie('token', '', {
+                maxAge: 0
+              });
+              return renderPage(false, null, image);
+            }
+
+            let user = {
+              login: userObj.login,
+              name: userInfoObj.name,
+              avatar: userInfoObj.avatar
+            };
+
+            renderPage(true, user, image);
+          });
+        });
+      });
+    });
+  });
+});
+
+app.get('/album/:albumId', (req, res) => {
+
+  let token = req.cookies.token || null;
+  let albumId = req.params.albumId || null;
+
+  let renderPage = (c, u, a) => {
+    res.render('pages/album', {
+      head: {
+        title: 'Memster - ' + a.title
+      },
+      cookie: c,
+      user: u,
+      album: a
+    });
+  };
+
+  albums.find({
+    'id': albumId
+  }).limit(1).next((err, albumObj) => {
+
+    if (err) return console.log(err);
+
+    if (albumObj === null) {
+      return res.redirect('/404');
+    }
+
+
+    let album = {
+      mine: false,
+      id: albumObj.id,
+      title: albumObj.title,
+      cover: albumObj.cover,
+      tags: albumObj.tags,
+      owner: albumObj.owner,
+      images: []
+    };
+
+    users.find({
+      'login': albumObj.owner
+    }).limit(1).next((err, userObj) => {
+      if (err) return console.log(err);
+
+      if (albumObj === null) {
+        return res.redirect('/404');
+      }
+
+      album.mine = userObj.token === token;
+
+      images.find({
+        'album': album.id
+      }).toArray((err, imgs) => {
+
+        if (err) return console.log(err);
+
+        album.images = imgs.map((i) => ({
+          'id': i.id,
+          'filename': i.filename,
+          'title': i.title,
+          'likes': i.likes
+        }));
+
+        if (token === null) {
+          return renderPage(false, null, album);
+        }
+
+        users.find({
+          'token': token
+        }).limit(1).next((err, userObj) => {
+
+          if (err) return console.log(err);
+
+          if (userObj === null) {
+            res.cookie('token', '', {
+              maxAge: 0
+            });
+            return renderPage(false, null, album);
+          }
+
+          usersData.find({
+            'owner': userObj.login
+          }).limit(1).next((err, userInfoObj) => {
+
+            if (err) return console.log(err);
+
+            if (userInfoObj === null) {
+              res.cookie('token', '', {
+                maxAge: 0
+              });
+              return renderPage(false, null, album);
+            }
+
+            let user = {
+              login: userObj.login,
+              name: userInfoObj.name,
+              avatar: userInfoObj.avatar
+            };
+
+            renderPage(true, user, album);
+          });
+        });
+      });
+    });
+  });
+});
+
+app.get('/images/:login', (req, res) => {
+
+  let token = req.cookies.token || null;
+  let login = req.params.login || null;
+
+  let renderPage = (c, u, p, i) => {
+    res.render('pages/images', {
+      head: {
+        title: 'Memster - Картинки @' + p.login
+      },
+      cookie: c,
+      user: u,
+      profile: p,
+      images: i
+    });
+  };
+
+  users.find({
+    'login': login
+  }).limit(1).next((err, userObj) => {
+
+    if (err) return console.log(err);
+
+    if (userObj === null) {
+      return res.redirect('/404');
+    }
+
+    let profile = {
+      login: userObj.login,
+      mine: userObj.token === token
+    };
+
+    images.find({
+      'owner': login
+    }).toArray((err, imgs) => {
+
+      if (err) return console.log(err);
+
+      let images = imgs.map((i) => ({
+        'id': i.id,
+        'filename': i.filename,
+        'title': i.title,
+        'likes': i.likes
+      }));
+
+      if (token === null) {
+        return renderPage(false, null, profile, images);
+      }
+
+      users.find({
+        'token': token
+      }).limit(1).next((err, userObj) => {
+
+        if (err) return console.log(err);
+
+        if (userObj === null) {
+          res.cookie('token', '', {
+            maxAge: 0
+          });
+          return renderPage(false, null, profile, images);
+        }
+
+        usersData.find({
+          'owner': userObj.login
+        }).limit(1).next((err, userInfoObj) => {
+
+          if (err) return console.log(err);
+
+          if (userInfoObj === null) {
+            res.cookie('token', '', {
+              maxAge: 0
+            });
+            return renderPage(false, null, profile, images);
+          }
+
+          let user = {
+            login: userObj.login,
+            name: userInfoObj.name,
+            avatar: userInfoObj.avatar
+          };
+
+          renderPage(true, user, profile, images);
+        });
+      });
+    });
+  });
+});
+
+app.get('/albums/:login', (req, res) => {
+
+  let token = req.cookies.token || null;
+  let login = req.params.login || null;
+
+  let renderPage = (c, u, p, a) => {
+    res.render('pages/albums', {
+      head: {
+        title: 'Memster - Альбомы @' + p.login
+      },
+      cookie: c,
+      user: u,
+      profile: p,
+      albums: a
+    });
+  };
+
+  users.find({
+    'login': login
+  }).limit(1).next((err, userObj) => {
+
+    if (err) return console.log(err);
+
+    if (userObj === null) {
+      return res.redirect('/404');
+    }
+
+    let profile = {
+      login: userObj.login,
+      mine: userObj.token === token
+    };
+
+    albums.find({
+      'owner': login
+    }).toArray((err, albms) => {
+
+      if (err) return console.log(err);
+
+      let albums = albms.map((a) => ({
+        'id': a.id,
+        'cover': a.cover,
+        'title': a.title
+      }));
+
+      if (token === null) {
+        return renderPage(false, null, profile, albums);
+      }
+
+      users.find({
+        'token': token
+      }).limit(1).next((err, userObj) => {
+
+        if (err) return console.log(err);
+
+        if (userObj === null) {
+          res.cookie('token', '', {
+            maxAge: 0
+          });
+          return renderPage(false, null, profile, albums);
+        }
+
+        usersData.find({
+          'owner': userObj.login
+        }).limit(1).next((err, userInfoObj) => {
+
+          if (err) return console.log(err);
+
+          if (userInfoObj === null) {
+            res.cookie('token', '', {
+              maxAge: 0
+            });
+            return renderPage(false, null, profile, albums);
+          }
+
+          let user = {
+            login: userObj.login,
+            name: userInfoObj.name,
+            avatar: userInfoObj.avatar
+          };
+
+          renderPage(true, user, profile, albums);
+        });
+      });
+    });
+  });
+});
+
+app.get('/liked/:login', (req, res) => {
+
+  let token = req.cookies.token || null;
+  let login = req.params.login || null;
+
+  let renderPage = (c, u, p, i) => {
+    res.render('pages/liked', {
+      head: {
+        title: 'Memster - Понравившиеся @' + p.login
+      },
+      cookie: c,
+      user: u,
+      profile: p,
+      images: i
+    });
+  };
+
+  users.find({
+    'login': login
+  }).limit(1).next((err, userObj) => {
+
+    if (err) return console.log(err);
+
+    if (userObj === null) {
+      return res.redirect('/404');
+    }
+
+    let profile = {
+      login: userObj.login,
+      mine: userObj.token === token
+    };
+
+    usersData.find({
+      'owner': login
+    }).limit(1).next((err, userInfoObj) => {
+
+      if (err) return console.log(err);
+
+      if (userInfoObj === null) {
+        return res.redirect('/404');
+      }
+
+      images.find({
+        'id': {
+          $in: userInfoObj.liked
+        }
+      }).toArray((err, imgs) => {
+
+        if (err) return console.log(err);
+
+        let images = imgs.map((i) => ({
+          'id': i.id,
+          'filename': i.filename,
+          'title': i.title,
+          'likes': i.likes
+        }));
+
+        if (token === null) {
+          return renderPage(false, null, profile, images);
+        }
+
+        users.find({
+          'token': token
+        }).limit(1).next((err, userObj) => {
+
+          if (err) return console.log(err);
+
+          if (userObj === null) {
+            res.cookie('token', '', {
+              maxAge: 0
+            });
+            return renderPage(false, null, profile, images);
+          }
+
+          usersData.find({
+            'owner': userObj.login
+          }).limit(1).next((err, userInfoObj) => {
+
+            if (err) return console.log(err);
+
+            if (userInfoObj === null) {
+              res.cookie('token', '', {
+                maxAge: 0
+              });
+              return renderPage(false, null, profile, images);
+            }
+
+            let user = {
+              login: userObj.login,
+              name: userInfoObj.name,
+              avatar: userInfoObj.avatar
+            };
+
+            renderPage(true, user, profile, images);
+          });
+        });
       });
     });
   });
@@ -1109,9 +1595,6 @@ app.post('/api/:token/avatar', (req, res) => {
 app.post('/api/:token/image', (req, res) => {
 
   let token = req.params.token;
-  let title = req.body.title;
-  let tags = req.body.tags;
-  let albumId = null || req.body.albumId;
 
   users.find({
     'token': token
@@ -1127,6 +1610,10 @@ app.post('/api/:token/image', (req, res) => {
 
     uploadImage.single('image')(req, res, (err) => {
       if (err) return console.log(err);
+
+      let title = req.body.title;
+      let tags = req.body.tags;
+      let albumId = null || req.body.albumId;
 
       let imageObj = {
         'id': uuid(),
@@ -1838,7 +2325,7 @@ app.get('/api/album/:albumId/likes', (req, res) => {
 
     res.send({
       'success': true,
-      'likes': imgs.reduce((a, b) => a.likes + b.likes)
+      'likes': imgs.length > 0 ? imgs.map((i) => i.likes).reduce((a, b) => a + b) : 0
     });
   });
 });
@@ -1855,7 +2342,7 @@ app.get('/api/:login/likes', (req, res) => {
 
     res.send({
       'success': true,
-      'likes': imgs.reduce((a, b) => a.likes + b.likes)
+      'likes': imgs.length > 0 ? imgs.map((i) => i.likes).reduce((a, b) => a + b) : 0
     });
   });
 });
