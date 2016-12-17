@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<% include ../partials/head %>
+
+<body>
+    <div id="splash"></div>
+    <div class="container">
+        <div class="row container-row">
+            <% include ../partials/sidebar %>
+            <div class="col-md-offset-2 col-md-10 content-container">
+                <% include ../partials/navbar %>
+                <div class="row">
+                    <div class="col-md-12 random-pics" style="height: auto;">
+                        <div class="col-md-12">
+                            <style>
+                                .input-group {
+                                    margin-bottom: 15px;
+                                }
+                            </style>
+
+                            <h3 class="text-center">Загрузить картинку</h3>
+                            <div class="input-group">
+                                <span class="input-group-addon" id="basic-addon3">Заголовок</span>
+                                <input type="text" id="title" class="form-control" aria-describedby="basic-addon3">
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon" id="basic-addon3">Теги</span>
+                                <input type="text" id="tags" class="form-control" aria-describedby="basic-addon3">
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon" id="basic-addon3">Альбом</span>
+                                <select class="form-control">
+                                  <option value="volvo">Volvo</option>
+                                  <option value="saab">Saab</option>
+                                  <option value="mercedes">Mercedes</option>
+                                  <option value="audi">Audi</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" readonly>
+                                <label class="input-group-btn">
+                                    <span class="btn btn-primary">
+                                        Выбрать картинку&hellip; <input id="imageInput" accept="image/jpeg , image/png" type="file" style="display: none;">
+                                    </span>
+                                </label>
+                            </div>
+                            <button id="uploadBtn" type="button" class="btn btn-primary">Добавить</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 content-footer">
+                        <p>2016 @ Nadya Isaeva</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<% include ../partials/footer %>

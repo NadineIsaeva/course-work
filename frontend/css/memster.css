@@ -132,6 +132,12 @@ body,
     font-size: 16px;
     font-weight: 600;
     margin: 15px 0;
+    color: #337ab7;
+}
+
+.userinfo-big a:hover,
+.userinfo-big-second a:hover {
+    text-decoration: none;
 }
 
 .userinfo-big-second .stat-block span {
@@ -139,18 +145,24 @@ body,
 }
 
 .userinfo-big-second .stat-block:hover span,
-.userinfo-big-second #liked:hover .count {
+.userinfo-big-second #liked:hover .count,
+.userinfo-big-second a:hover p {
     color: #3c763d;
 }
 
+.userinfo-big-second #likes:hover span {
+    cursor: default;
+    color: #337ab7;
+}
+
 .userinfo-big-second .count {
-    left: 72px;
+    left: 0;
+    right: 0;
     position: absolute;
     top: 80px;
 }
 
 .userinfo-big-second #albums .count {
-    left: 62px;
     color: #fff;
     top: 92px;
     padding-left: 0;
@@ -161,19 +173,18 @@ body,
 }
 
 .userinfo-big-second #images .count {
-    left: 70px;
     color: #fff;
     top: 130px;
 }
 
 .userinfo-big-second #liked .count {
-    left: 74px;
     color: #337ab7;
+    padding-left: 10px;
 }
 
 .userinfo-big-second #likes .count {
-    left: 74px;
     color: #fff;
+    padding-left: 10px;
 }
 
 
@@ -268,6 +279,7 @@ body,
 /* FOOTER */
 
 .content-footer {
+    margin-top: 15px;
     min-height: 50px;
     text-align: center;
 }

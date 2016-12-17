@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<% include ../partials/head %>
+
+<body>
+    <div id="splash"></div>
+    <div class="container">
+        <div class="row container-row">
+            <% include ../partials/sidebar %>
+            <div class="col-md-offset-2 col-md-10 content-container">
+                <% include ../partials/navbar %>
+                <div class="row">
+                    <div class="col-md-12 random-pics" style="height: auto;">
+                        <div class="col-md-6 col-md-offset-3">
+							<style>
+								.input-group {
+									margin-bottom: 15px;
+								}
+							</style>													
+							
+							<h3 class="text-center">Восстановление пароля</h3>
+							<div class="input-group">
+								<span class="input-group-addon" id="basic-addon3">Логин</span>
+								<input type="text" id="login" class="form-control" aria-describedby="basic-addon3">
+							</div>
+							<div class="input-group">
+								<span class="input-group-addon" id="basic-addon3">Секрет</span>
+								<input type="text" id="secret" class="form-control" aria-describedby="basic-addon3">
+							</div>
+							<div class="input-group">
+								<span class="input-group-addon" id="basic-addon3">Новый пароль</span>
+								<input type="text" id="password" class="form-control" aria-describedby="basic-addon3">
+							</div>
+							<button class="btn btn-primary" type="button" id="restoreBtn">Отправить</button>
+						</div>
+					</div>
+                </div> 
+                <div class="row">
+                    <div class="col-md-12 content-footer">
+                        <p>2016 @ Nadya Isaeva</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<% include ../partials/footer %>

@@ -64,6 +64,7 @@
 //
 
 const path = require('path');
+const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser');
 const express = require('express');
 const passwordHash = require('password-hash');
@@ -119,6 +120,7 @@ let uploadAvatar = multer({
 app.set('view engine', 'ejs');
 app.set('port', process.env.PORT || 8080);
 app.set('host', process.env.IP || "0.0.0.0");
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(express.static(path.resolve(__dirname, 'frontend')));
 app.use('/images', express.static(path.resolve(__dirname, 'data/images')));
@@ -128,11 +130,644 @@ app.use('/avatars', express.static(path.resolve(__dirname, 'data/avatars')));
 //          M E M S T E R   S I T E         //
 //////////////////////////////////////////////
 
+app.get('/404', (req, res) => {
+
+  let token = req.cookies.token || null;
+
+  let renderPage = (c, u) => {
+    res.render('pages/error404', {
+      head: {
+        title: 'Memster - 404'
+      },
+      cookie: c,
+      user: u
+    });
+  };
+
+  if (token === null) {
+    return renderPage(false);
+  }
+
+  users.find({
+    'token': token
+  }).limit(1).next((err, userObj) => {
+
+    if (err) return console.log(err);
+
+    if (userObj === null) {
+      res.cookie('token', '', {
+        maxAge: 0
+      });
+      return renderPage(false);
+    }
+
+    usersData.find({
+      'owner': userObj.login
+    }).limit(1).next((err, userInfoObj) => {
+
+      if (err) return console.log(err);
+
+      if (userInfoObj === null) {
+        res.cookie('token', '', {
+          maxAge: 0
+        });
+        return renderPage(false);
+      }
+
+      renderPage(true, {
+        login: userObj.login,
+        name: userInfoObj.name,
+        avatar: userInfoObj.avatar
+      });
+    });
+  });
+});
+
+app.get('/profile/:login', (req, res) => {
+
+  let token = req.cookies.token || null;
+  let login = req.params.login || null;
+
+  let renderPage = (c, u, p) => {
+    res.render('pages/profile', {
+      head: {
+        title: 'Memster - ' + p.name
+      },
+      cookie: c,
+      user: u,
+      profile: p
+    });
+  };
+
+  users.find({
+    'login': login
+  }).limit(1).next((err, userObj) => {
+
+    if (err) return console.log(err);
+
+    if (userObj === null) {
+      return res.redirect('/404');
+    }
+
+    usersData.find({
+      'owner': login
+    }).limit(1).next((err, userInfoObj) => {
+
+      if (err) return console.log(err);
+
+      if (userInfoObj === null) {
+        return res.redirect('/404');
+      }
+
+      let profile = {
+        login: userObj.login,
+        name: userInfoObj.name,
+        avatar: userInfoObj.avatar,
+        mine: token === userObj.token,
+        liked: userInfoObj.liked.length,
+        albums: 0,
+        images: 0,
+        likes: 0
+      };
+
+      images.find({
+        'owner': login
+      }).toArray((err, imgs) => {
+        if (err) return console.log(err);
+
+        profile.images = imgs.length;
+        if (imgs.length > 0) {
+          profile.likes = imgs.reduce((a, b) => a.likes + b.likes);
+        }
+
+        albums.find({
+          'owner': login
+        }).count((err, albms) => {
+
+          if (err) return console.log(err);
+
+          profile.albums = albms;
+
+          if (token === null) {
+            return renderPage(false, null, profile);
+          }
+          
+          users.find({
+            'token': token
+          }).limit(1).next((err, userObj) => {
+
+            if (err) return console.log(err);
+
+            if (userObj === null) {
+              res.cookie('token', '', {
+                maxAge: 0
+              });
+              return renderPage(false, null, profile);
+            }
+
+            usersData.find({
+              'owner': userObj.login
+            }).limit(1).next((err, userInfoObj) => {
+
+              if (err) return console.log(err);
+
+              if (userInfoObj === null) {
+                res.cookie('token', '', {
+                  maxAge: 0
+                });
+                return renderPage(false, null, profile);
+              }
+
+              let user = {
+                login: userObj.login,
+                name: userInfoObj.name,
+                avatar: userInfoObj.avatar
+              };
+
+              renderPage(true, user, profile);
+            });
+          });
+        });
+      });
+    });
+  });
+
+});
+
 app.get('/about', (req, res) => {
-  res.render('pages/about', {
-    head: {
-      title: "Memster - О нас"
-    },
+
+  let token = req.cookies.token || null;
+
+  let renderPage = (c, u) => {
+    res.render('pages/about', {
+      head: {
+        title: 'Memster - О нас'
+      },
+      cookie: c,
+      user: u
+    });
+  };
+
+  if (token === null) {
+    return renderPage(false);
+  }
+
+  users.find({
+    'token': token
+  }).limit(1).next((err, userObj) => {
+
+    if (err) return console.log(err);
+
+    if (userObj === null) {
+      res.cookie('token', '', {
+        maxAge: 0
+      });
+      return renderPage(false);
+    }
+
+    usersData.find({
+      'owner': userObj.login
+    }).limit(1).next((err, userInfoObj) => {
+
+      if (err) return console.log(err);
+
+      if (userInfoObj === null) {
+        res.cookie('token', '', {
+          maxAge: 0
+        });
+        return renderPage(false);
+      }
+
+      renderPage(true, {
+        login: userObj.login,
+        name: userInfoObj.name,
+        avatar: userInfoObj.avatar
+      });
+    });
+  });
+});
+
+app.get('/rules', (req, res) => {
+
+  let token = req.cookies.token || null;
+
+  let renderPage = (c, u) => {
+    res.render('pages/rules', {
+      head: {
+        title: 'Memster - Правила'
+      },
+      cookie: c,
+      user: u
+    });
+  };
+
+  if (token === null) {
+    return renderPage(false);
+  }
+
+  users.find({
+    'token': token
+  }).limit(1).next((err, userObj) => {
+
+    if (err) return console.log(err);
+
+    if (userObj === null) {
+      res.cookie('token', '', {
+        maxAge: 0
+      });
+      return renderPage(false);
+    }
+
+    usersData.find({
+      'owner': userObj.login
+    }).limit(1).next((err, userInfoObj) => {
+
+      if (err) return console.log(err);
+
+      if (userInfoObj === null) {
+        res.cookie('token', '', {
+          maxAge: 0
+        });
+        return renderPage(false);
+      }
+
+      renderPage(true, {
+        login: userObj.login,
+        name: userInfoObj.name,
+        avatar: userInfoObj.avatar
+      });
+    });
+  });
+});
+
+app.get('/login', (req, res) => {
+
+  let token = req.cookies.token || null;
+
+  let renderPage = (c, u) => {
+    res.render('pages/login', {
+      head: {
+        title: 'Memster - Авторизация'
+      },
+      cookie: c,
+      user: u
+    });
+  };
+
+  if (token === null) {
+    return renderPage(false);
+  }
+
+  users.find({
+    'token': token
+  }).limit(1).next((err, userObj) => {
+
+    if (err) return console.log(err);
+
+    if (userObj === null) {
+      res.cookie('token', '', {
+        maxAge: 0
+      });
+      return renderPage(false);
+    }
+
+    usersData.find({
+      'owner': userObj.login
+    }).limit(1).next((err, userInfoObj) => {
+
+      if (err) return console.log(err);
+
+      if (userInfoObj === null) {
+        res.cookie('token', '', {
+          maxAge: 0
+        });
+        return renderPage(false);
+      }
+
+      renderPage(true, {
+        login: userObj.login,
+        name: userInfoObj.name,
+        avatar: userInfoObj.avatar
+      });
+    });
+  });
+});
+
+app.get('/register', (req, res) => {
+
+  let token = req.cookies.token || null;
+
+  let renderPage = (c, u) => {
+    res.render('pages/register', {
+      head: {
+        title: 'Memster - Регистрация'
+      },
+      cookie: c,
+      user: u
+    });
+  };
+
+  if (token === null) {
+    return renderPage(false);
+  }
+
+  users.find({
+    'token': token
+  }).limit(1).next((err, userObj) => {
+
+    if (err) return console.log(err);
+
+    if (userObj === null) {
+      res.cookie('token', '', {
+        maxAge: 0
+      });
+      return renderPage(false);
+    }
+
+    usersData.find({
+      'owner': userObj.login
+    }).limit(1).next((err, userInfoObj) => {
+
+      if (err) return console.log(err);
+
+      if (userInfoObj === null) {
+        res.cookie('token', '', {
+          maxAge: 0
+        });
+        return renderPage(false);
+      }
+
+      renderPage(true, {
+        login: userObj.login,
+        name: userInfoObj.name,
+        avatar: userInfoObj.avatar
+      });
+    });
+  });
+});
+
+app.get('/restore', (req, res) => {
+
+  let token = req.cookies.token || null;
+
+  let renderPage = (c, u) => {
+    res.render('pages/restore', {
+      head: {
+        title: 'Memster - Сброс пароля'
+      },
+      cookie: c,
+      user: u
+    });
+  };
+
+  if (token === null) {
+    return renderPage(false);
+  }
+
+  users.find({
+    'token': token
+  }).limit(1).next((err, userObj) => {
+
+    if (err) return console.log(err);
+
+    if (userObj === null) {
+      res.cookie('token', '', {
+        maxAge: 0
+      });
+      return renderPage(false);
+    }
+
+    usersData.find({
+      'owner': userObj.login
+    }).limit(1).next((err, userInfoObj) => {
+
+      if (err) return console.log(err);
+
+      if (userInfoObj === null) {
+        res.cookie('token', '', {
+          maxAge: 0
+        });
+        return renderPage(false);
+      }
+
+      renderPage(true, {
+        login: userObj.login,
+        name: userInfoObj.name,
+        avatar: userInfoObj.avatar
+      });
+    });
+  });
+});
+
+app.get('/', (req, res) => {
+
+  let token = req.cookies.token || null;
+
+  let renderPage = (c, u) => {
+    res.render('pages/index', {
+      head: {
+        title: 'Memster'
+      },
+      cookie: c,
+      user: u
+    });
+  };
+
+  if (token === null) {
+    return renderPage(false);
+  }
+
+  users.find({
+    'token': token
+  }).limit(1).next((err, userObj) => {
+
+    if (err) return console.log(err);
+
+    if (userObj === null) {
+      res.cookie('token', '', {
+        maxAge: 0
+      });
+      return renderPage(false);
+    }
+
+    usersData.find({
+      'owner': userObj.login
+    }).limit(1).next((err, userInfoObj) => {
+
+      if (err) return console.log(err);
+
+      if (userInfoObj === null) {
+        res.cookie('token', '', {
+          maxAge: 0
+        });
+        return renderPage(false);
+      }
+
+      renderPage(true, {
+        login: userObj.login,
+        name: userInfoObj.name,
+        avatar: userInfoObj.avatar
+      });
+    });
+  });
+});
+
+app.get('/create/image', (req, res) => {
+
+  let token = req.cookies.token || null;
+
+  let renderPage = (c, u) => {
+    res.render('pages/uploadImage', {
+      head: {
+        title: 'Memster - Новая картинка'
+      },
+      cookie: c,
+      user: u
+    });
+  };
+
+  if (token === null) {
+    return res.redirect(401, '/login');
+  }
+
+  users.find({
+    'token': token
+  }).limit(1).next((err, userObj) => {
+
+    if (err) return console.log(err);
+
+    if (userObj === null) {
+      res.cookie('token', '', {
+        maxAge: 0
+      });
+      return renderPage(false);
+    }
+
+    usersData.find({
+      'owner': userObj.login
+    }).limit(1).next((err, userInfoObj) => {
+
+      if (err) return console.log(err);
+
+      if (userInfoObj === null) {
+        res.cookie('token', '', {
+          maxAge: 0
+        });
+        return renderPage(false);
+      }
+
+      renderPage(true, {
+        login: userObj.login,
+        name: userInfoObj.name,
+        avatar: userInfoObj.avatar
+      });
+    });
+  });
+});
+
+app.get('/create/album', (req, res) => {
+
+  let token = req.cookies.token || null;
+
+  let renderPage = (c, u) => {
+    res.render('pages/createAlbum', {
+      head: {
+        title: 'Memster - Новый альбом'
+      },
+      cookie: c,
+      user: u
+    });
+  };
+
+  if (token === null) {
+    return res.redirect(401, '/login');
+  }
+
+  users.find({
+    'token': token
+  }).limit(1).next((err, userObj) => {
+
+    if (err) return console.log(err);
+
+    if (userObj === null) {
+      res.cookie('token', '', {
+        maxAge: 0
+      });
+      return renderPage(false);
+    }
+
+    usersData.find({
+      'owner': userObj.login
+    }).limit(1).next((err, userInfoObj) => {
+
+      if (err) return console.log(err);
+
+      if (userInfoObj === null) {
+        res.cookie('token', '', {
+          maxAge: 0
+        });
+        return renderPage(false);
+      }
+
+      renderPage(true, {
+        login: userObj.login,
+        name: userInfoObj.name,
+        avatar: userInfoObj.avatar
+      });
+    });
+  });
+});
+
+app.get('/edit/profile', (req, res) => {
+
+  let token = req.cookies.token || null;
+
+  let renderPage = (c, u) => {
+    res.render('pages/editProfile', {
+      head: {
+        title: 'Memster - Редактирование пользователя'
+      },
+      cookie: c,
+      user: u
+    });
+  };
+
+  if (token === null) {
+    return res.redirect(401, '/login');
+  }
+
+  users.find({
+    'token': token
+  }).limit(1).next((err, userObj) => {
+
+    if (err) return console.log(err);
+
+    if (userObj === null) {
+      res.cookie('token', '', {
+        maxAge: 0
+      });
+      return renderPage(false);
+    }
+
+    usersData.find({
+      'owner': userObj.login
+    }).limit(1).next((err, userInfoObj) => {
+
+      if (err) return console.log(err);
+
+      if (userInfoObj === null) {
+        res.cookie('token', '', {
+          maxAge: 0
+        });
+        return renderPage(false);
+      }
+
+      renderPage(true, {
+        login: userObj.login,
+        name: userInfoObj.name,
+        avatar: userInfoObj.avatar
+      });
+    });
   });
 });
 
@@ -244,7 +879,7 @@ app.post('/api/login', (req, res) => {
     }
 
     usersData.find({
-      'login': login
+      'owner': login
     }).limit(1).next((err, userInfoObj) => {
 
       if (err) return console.log(err);
@@ -397,10 +1032,17 @@ app.post('/api/:token/userInfo', (req, res) => {
       userInfoObj.avatar = updateInfo.avatar || userInfoObj.avatar;
       userInfoObj.name = updateInfo.name || userInfoObj.name;
 
-      res.send({
-        'success': true,
-        'name': userInfoObj.name,
-        'avatar': userInfoObj.avatar
+      usersData.save(userInfoObj, (err, result) => {
+
+        if (err) return console.log(err);
+
+        console.log('User ' + userObj.login + ' updated userInfo ' + updateInfo);
+
+        res.send({
+          'success': true,
+          'name': userInfoObj.name,
+          'avatar': userInfoObj.avatar
+        });
       });
     });
   });
@@ -666,8 +1308,24 @@ app.get('/api/:token/image/:imageId/delete', (req, res) => {
 
         console.log('User ' + userObj.login + ' removed picture ' + imageId);
 
-        res.send({
-          'success': true
+        usersData.find({
+          'liked': imageObj.id
+        }).forEach((userInfoObj) => {
+
+          let indexOfLike = userInfoObj.liked.indexOf(imageObj.id);
+          if (indexOfLike > -1) {
+            userInfoObj.liked.splice(indexOfLike, 1);
+          }
+
+          usersData.save(userInfoObj);
+
+        }, (err) => {
+
+          if (err) return console.log(err);
+
+          res.send({
+            'success': true
+          });
         });
       });
     });
@@ -921,9 +1579,26 @@ app.get('/api/:token/album/:albumId/delete', (req, res) => {
 
         if (err) return console.log(err);
 
-        images.deleteMany({
+        images.find({
           'album': albumId
-        }, (err, result) => {
+        }).forEach((imageObj) => {
+
+          usersData.find({
+            'liked': imageObj.id
+          }).forEach((userInfoObj) => {
+
+            let indexOfLike = userInfoObj.liked.indexOf(imageObj.id);
+
+            if (indexOfLike > -1) {
+              userInfoObj.liked.splice(indexOfLike, 1);
+            }
+
+            usersData.save(userInfoObj);
+          }, (err) => {
+            if (err) return console.log(err);
+          });
+
+        }, (err) => {
 
           if (err) return console.log(err);
 
@@ -1188,7 +1863,7 @@ app.get('/api/:login/likes', (req, res) => {
 // Search
 app.get('/api/search', (req, res) => {
 
-  let searchQuery = req.body.searchQuery;
+  let searchQuery = req.query.searchQuery;
 
   if (searchQuery[0] === '@') { // search by login
 
@@ -1302,6 +1977,23 @@ app.get('/api/search', (req, res) => {
   }
 
 });
+
+/////////////////////////////
+// 404 
+/////////////////////////////
+
+// app.use(function(req, res, next) {
+//   res.status(404);
+
+//   // respond with html page
+//   if (req.accepts('html')) {
+//     return res.redirect('/404');
+//   }
+
+//   res.send({
+//     error: 'Not found'
+//   });
+// });
 
 mongoClient.connect('mongodb://localhost:27017/memsterdb', (err, database) => {
 

@@ -8,16 +8,23 @@ var memster = memster || {};
 		return !(getToken() === null || getToken() === undefined || getToken() === '');
 	}
 
-	function isNoAuthPage() {
-		return window.location.pathname.indexOf('login') > -1 ||
-			window.location.pathname.indexOf('register') > -1 ||
-			window.location.pathname.indexOf('about') > -1 ||
-			window.location.pathname.indexOf('restore') > -1 ||
-			window.location.pathname.indexOf('rules') > -1;
-	}
-
 	function getToken() {
-		return localStorage.getItem('token');
+
+		function getCookie(name) {
+			var matches = document.cookie.match(new RegExp(
+				'(?:^|; )' + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'
+			));
+			return matches ? decodeURIComponent(matches[1]) : undefined;
+		}
+
+		var localCookie = localStorage.getItem('token');
+
+		if (localCookie === getCookie('token')) {
+			return localCookie;
+		}
+
+		deleteToken();
+		return null;
 	}
 
 	function setToken(token) {
@@ -26,6 +33,7 @@ var memster = memster || {};
 
 	function deleteToken() {
 		localStorage.removeItem('token');
+		document.cookie = "token=;path=/;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 	}
 
 	function postAjax(path, jsonData, callback) {
@@ -135,11 +143,11 @@ var memster = memster || {};
 			type: "GET",
 			url: "/api/" + getToken() + "/" + imageId + "/like",
 			success: function(data, textStatus, jqXHR) {
-				
+
 				if (data.error) return console.log(data.error);
-				
+
 				if (data.success) {
-					$('[data-imageId='+imageId+']').find('.likes').text(data.likes);
+					$('[data-imageId=' + imageId + ']').find('.likes').text(data.likes);
 				}
 			}
 		});
@@ -193,11 +201,8 @@ var memster = memster || {};
 	function loginLogout(e) {
 		if (isAuthorized()) {
 			logout();
+			e.preventDefault();
 		}
-		else {
-			window.location.replace('./login.html');
-		}
-		e.preventDefault();
 	}
 
 	$(function() {
@@ -207,12 +212,11 @@ var memster = memster || {};
 		$('#restoreBtn').on('click', restore);
 		$('#uploadBtn').on('click', upload);
 		$('#login-logout-btn').on('click', loginLogout);
-		$('#login-logout-text').text(isAuthorized() ? 'Выйти' : 'Войти');
 
 		console.log('Is Authorized: ' + isAuthorized());
 
 		$("#imageInput").on('change', function() {
-			var size = $(this)[0].files[0].size;
+			var size = this.files[0].size;
 			if (size < 1024) {
 				size += " байт";
 			}
@@ -223,7 +227,7 @@ var memster = memster || {};
 				size = (size / (1024 * 1024)).toFixed(2) + " МБ";
 			}
 
-			var name = $(this)[0].files[0].name;
+			var name = this.files[0].name;
 
 			if (name.length > 50) {
 				name = name.substr(0, 24) + " - " + name.substr(name.length - 24, 24);
@@ -231,41 +235,6 @@ var memster = memster || {};
 
 			$(this).parents('.input-group').find(':text').val(name + " | " + size);
 		});
-
-		if ($('#random-pics-content').length > 0) {
-			getRandomPics(function(data) {
-				if (data.success) {
-					$('#random-pics-content').html('');
-					data.images.forEach(function(i) {
-						$('#random-pics-content').append(constuctRandomPic(i));
-					});
-				}
-			});
-		}
-
-		if ($('#random-albums-content').length > 0) {
-			getRandomPics(function(data) {
-				if (data.success) {
-					$('#random-albums-content').html('');
-					data.images.forEach(function(i) {
-						$('#random-albums-content').append(constuctRandomPic(i));
-					});
-				}
-			});
-		}
-
-		if ($('#userinfo-name').length > 0) {
-			getUserInfo(function(data) {
-				if (data.success) {
-					$('#userinfo-name').text(data.name);
-				}
-			})
-		}
-
-		if (!isAuthorized() && !isNoAuthPage()) {
-			console.log('Not authorized');
-			window.location.replace('./login.html');
-		}
 
 		$('#splash').fadeOut(500);
 	});

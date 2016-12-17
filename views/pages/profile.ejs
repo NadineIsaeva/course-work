@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<% include ../partials/head %>
+
+<body>
+    <div id="splash"></div>
+    <div class="container">
+        <div class="row container-row">
+            <% include ../partials/sidebar %>
+            <div class="col-md-offset-2 col-md-10 content-container">
+                <% include ../partials/navbar %>
+                <div class="row">
+                    <div class="col-md-12 userinfo-big">
+                        <h2 class="text-center">Страница <a href="/profile/<%=profile.login%>">@<%=profile.login%></a> <%=profile.mine ? "(моя)" : ""%></h2>
+                        <div class="col-md-1">
+                        </div>
+                        <div class="col-md-10">
+                            <div class="col-md-4">
+                                <div class="userpic text-center">
+                                    <img id="userinfo-avatar-big" src="<%= profile.avatar === null ? "/img/camera.png" : "/avatars/" + profile.avatar %>">
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <h2 class="username text-center"><%=profile.name%></h2>
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 userinfo-big-second">
+                        <div class="col-md-1">
+                        </div>
+                        <div class="col-md-10 text-center">
+                            <a id="albums" class="col-md-3 stat-block" href="/albums/<%=profile.login%>">
+                                <p>Альбомов</p>
+                                <span class="glyphicon glyphicon-book"></span>
+                                <p class="count"><%=profile.albums%></p>
+                            </a>
+                            <a id="images" class="col-md-3 stat-block" href="/images/<%=profile.login%>">
+                                <p>Картинок</p>
+                                <span class="glyphicon glyphicon-picture"></span>
+                                <p class="count"><%=profile.images%></p>
+                            </a>
+                            <a id="liked" class="col-md-3 stat-block" href="/liked/<%=profile.login%>">
+                                <p>Поставил лайков</p>
+                                <span class="glyphicon glyphicon-heart-empty"></span>
+                                <p class="count"><%=profile.liked%></p>
+                            </a>
+                            <div id="likes" class="col-md-3 stat-block">
+                                <p>Получил лайков</p>
+                                <span class="glyphicon glyphicon-heart"></span>
+                                <p class="count"><%=profile.likes%></p>
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 content-footer">
+                        <p>2016 @ Nadya Isaeva</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<% include ../partials/footer %>

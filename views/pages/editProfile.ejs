@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<% include ../partials/head %>
+
+<body>
+    <div id="splash"></div>
+    <div class="container">
+        <div class="row container-row">
+            <% include ../partials/sidebar %>
+            <div class="col-md-offset-2 col-md-10 content-container">
+                <% include ../partials/navbar %>
+                <div class="row">
+                    <div class="col-md-12 random-pics" style="height: auto;">
+                        <div class="col-md-12">
+                            <style>
+                                .input-group {
+                                    margin-bottom: 15px;
+                                }
+                            </style>
+
+                            <h3 class="text-center">Редактирование профиля</h3>
+
+                            <div class="col-md-12 userinfo-big">
+                                
+                                <div class="col-md-1">
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="col-md-4">
+                                        <div class="userpic text-center">
+                                            <img id="userinfo-avatar-big" src="<%= user.avatar === null ? "/img/camera.png" : "/avatars/" + user.avatar %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <h2 class="username text-center"><%=user.name%></h2>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                </div>
+                            </div>
+                            
+                            <div class="input-group">
+                                <span class="input-group-addon" id="basic-addon3">Имя</span>
+                                <input type="text" id="title" class="form-control" value="<%=user.name%>" aria-describedby="basic-addon3">
+                            </div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" readonly>
+                                <label class="input-group-btn">
+                                    <span class="btn btn-primary">
+                                        Выбрать аватарку&hellip; <input id="imageInput" accept="image/jpeg , image/png" type="file" style="display: none;">
+                                    </span>
+                                </label>
+                            </div>
+                            <button id="uploadBtn" type="button" class="btn btn-primary">Изменить</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 content-footer">
+                        <p>2016 @ Nadya Isaeva</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<% include ../partials/footer %>

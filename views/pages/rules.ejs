@@ -7,52 +7,9 @@
     <div id="splash"></div>
     <div class="container">
         <div class="row container-row">
-            <div class="sidebar">
-                <div class="row text-center logo">
-                    <a href="./"><img src="./img/prozr-256.png"></a>
-                </div>
-                <div class="row userinfo">
-                    <div class="col-md-12">
-                        <div class="userpic">
-                            <!--<img src="./img/camera.png">-->
-                        </div>
-                        <div class="username">
-                            <!--<a href="#">Твое имя тут</a>-->
-                        </div>
-                    </div>
-                </div>
-                <div class="row sidebar-menu">
-                </div>
-            </div>
+            <% include ../partials/sidebar %>
             <div class="col-md-offset-2 col-md-10 content-container">
-                <div class="row">
-                    <div class="col-md-12 content-nav">
-                        <nav class="navbar">
-                            <div class="container-fluid">
-                                <ul class="nav navbar-nav">
-                                    <li><a href="./">На главную</a></li>
-                                    <li><a href="./register.html">Зарегистрироваться</a></li>
-                                    <li><a href="./restore.html">Восстановить пароль</a></li>
-                                    <li><a href="./about.html">О нас</a></li>
-                                    <li><a href="./rules.html">Правила сайта</a></li>
-                                </ul>
-                                <ul class="nav navbar-nav navbar-right">
-                                    <li><a id='login-logout-btn' href="./login.html"><span class="glyphicon glyphicon-log-in"></span> <span id='login-logout-text'>Войти</span></a></li>
-                                </ul>
-                            </div>
-                        </nav>
-                    </div>
-                </div>
-                <div class="row">
-                    <!--<div class="col-md-12 content-search">-->
-                    <!--    <div class="input-group">-->
-                    <!--        <input type="text" class="form-control" placeholder="Напиши сюда тег...">-->
-                    <!--        <span class="input-group-btn">-->
-                    <!--            <button class="btn btn-primary btn-secondary" type="button">Искать <span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>-->
-                    <!--        </span>-->
-                    <!--    </div>-->
-                    <!--</div>-->
-                </div>
+                <% include ../partials/navbar %>
                 <div class="row">
                     <div class="col-md-12 random-pics" style="height: auto;">
                         <div class="col-md-8 col-md-offset-2">
@@ -62,29 +19,29 @@
                                 }
                             </style>
 
-                            <h3 class="text-center">Про нас</h3>
+                            <h3 class="text-center">Правила сайта</h3>
                             <p>
-                                <b>Что это такое?</b>
+                                <b>Первое правило сайта:</b> не упоминать о сайте в обществе приличных разработчиков.
                             </p>
-                            <p style="padding-left: 30px">
-                                Memster – это место, где можно хранить ваши любимые изображения удобно и красиво.
-                                <br>
-                                <br>
                             <p>
-                                <b>Зачем это?</b>
+                                <b>Второе правило сайта:</b> нигде не упоминать о сайте.
                             </p>
-                            <p style="padding-left: 30px">
-                                1) Чтобы каждый мог сохранять, пересматривать, искать картинки. Новые картинки – новое вдохновение. Вдохновение на каждый день.
-                                <br> 2) Чтобы продолжить обучение в любимом университете.
-                                <br>
-                                <br>
+                            <p>
+                                <b>Третье правило сайта:</b> не отчислять девочек по имени Надя.
+                            </p>
+                            <p>
+                                <b>Четвертое правило сайта:</b> не загружать на сайт картинки, которые каким-либо образом могут причинить вред другим пользователям.
+                            </p>
+                            <p>
+                                <b>Пятое правило сайта:</b> не использовать неприличные слова в тегах и подписях к картинкам.
                             </p>
                             <p class="text-center">
-                                <b>Скорее регистрируйся, пока это бесплатно!</b>
-                                <br>
-                                <br>
-                                <img src="./img/happy-memster.jpg">
+                                <img src="./img/care-memster.jpg">
                             </p>
+                            <!--<h4>Запрос:</h4>-->
+                            <!--<div class="well well-lg" id="request">{}</div>-->
+                            <!--<h4>Ответ:</h4>-->
+                            <!--<div class="well well-lg" id="response">{}</div>-->
                         </div>
                     </div>
                 </div>
@@ -97,10 +54,4 @@
         </div>
     </div>
 
-    <!-- jQuery first, then Tether, then Bootstrap JS. -->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/memster.js"></script>
-</body>
-
-</html>
+<% include ../partials/footer %>
