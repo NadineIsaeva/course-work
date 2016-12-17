@@ -23,7 +23,7 @@
                             <p class="text-center">
                                 <img src="/img/<%=image.filename%>" style="max-width: 400px;">
                             </p>
-                            <p class="text-center">
+                            <p class="text-center" id="<%=image.id%>">
                                 <a class="btn btn-sm btn-primary" onclick="memster.likePic('<%=image.id%>');" role="button"><b>Лайки</b> <span class="glyphicon glyphicon-heart" aria-hidden="true"></span> <span class='likes'><%=image.likes%></span></a>
                                 <% if (image.mine) { %>
                                 <a class="btn btn-sm btn-success" onclick="memster.editPic('<%=image.id%>');" role="button">Редактировать <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>

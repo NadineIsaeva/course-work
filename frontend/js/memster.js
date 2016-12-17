@@ -118,32 +118,45 @@ var memster = memster || {};
 		});
 	}
 
-	function constuctRandomPic(imageObj) {
-		var template = '<div class="col-md-3">' +
-			'<div class="thumbnail" data-owner="{{img-owner}}" data-imageId="{{img-id}}" data-album="{{img-album}}" data-tags="{{img-tags}}">' +
-			'<img src="{{img-src}}">' +
+	function constuctPic(imageObj) {
+		var template = '<div class="col-md-3" id="{{img-id}}">' +
+			'<div class="thumbnail">' +
+			'<a href="/image/{{img-id}}"><img src="{{img-src}}"></a>' +
 			'<div class="caption">' +
 			'<p>{{img-title}}</p>' +
-			'<a href="#" class="btn btn-primary" onclick="memster.likePic(\'{{img-id}}\');" role="button"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span> <span class="likes">{{img-likes}}</span></a>' +
+			'<a class="btn btn-primary" onclick="memster.likePic(\'{{img-id}}\');" role="button"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span> <span class="likes">{{img-likes}}</span></a>' +
 			'</div>' +
 			'</div>' +
 			'</div>';
 
-		return template.replace('{{img-src}}', './images/' + imageObj.filename)
-			.replace('{{img-owner}}', imageObj.owner)
-			.replace(/{{img-id}}/g, imageObj.imageId)
-			.replace('{{img-album}}', imageObj.album)
-			.replace('{{img-tags}}', imageObj.tags)
+		return template.replace('{{img-src}}', '/img/' + imageObj.filename)
+			.replace(/{{img-id}}/g, imageObj.id)
 			.replace('{{img-title}}', imageObj.title)
 			.replace('{{img-likes}}', imageObj.likes);
 	}
 
+	function constuctAlbum(albumObj) {
+		var template = '<div class="col-md-3">' +
+			'<div class="thumbnail">' +
+			'<a href="/album/{{album-id}}"><img src="{{album-cover}}"></a>' +
+			'<div class="caption">' +
+			'<p>{{album-title}}</p>' +
+			'<a href="/album/{{album-id}}" class="btn btn-primary" role="button">Открыть</a>' +
+			'</div>' +
+			'</div>' +
+			'</div>';
+
+		return template.replace('{{album-cover}}', '/img/' + (albumObj.cover ? albumObj.cover : "camera.png"))
+			.replace(/{{album-id}}/g, albumObj.id)
+			.replace('{{album-title}}', albumObj.title);
+	}
+
 	m.likePic = function(imageId) {
-		
+
 		if (!isAuthorized()) {
 			window.location.replace('/login');
 		}
-		
+
 		$.ajax({
 			type: "GET",
 			url: "/api/" + getToken() + "/image/" + imageId + "/like",
@@ -161,7 +174,17 @@ var memster = memster || {};
 	function getRandomPics(callback) {
 		$.ajax({
 			type: "GET",
-			url: "/api/random/pictures?limit=4",
+			url: "/api/images/random?limit=4",
+			success: function(data, textStatus, jqXHR) {
+				callback(data, textStatus, jqXHR);
+			}
+		});
+	}
+
+	function getRandomAlbum(callback) {
+		$.ajax({
+			type: "GET",
+			url: "/api/albums/random?limit=4",
 			success: function(data, textStatus, jqXHR) {
 				callback(data, textStatus, jqXHR);
 			}
@@ -231,6 +254,32 @@ var memster = memster || {};
 			$(this).parents('.input-group').find(':text').val(name + " | " + size);
 		});
 
+		if ($('#random-pics-content').length > 0 && $('#random-albums-content').length > 0) {
+			
+			var updateRandomContent = function() {
+				getRandomPics(function(data) {
+					if (data.success) {
+						$('#random-pics-content').html('');
+						data.images.forEach(function(i) {
+							$('#random-pics-content').append(constuctPic(i));
+						});
+					}
+				});
+				getRandomAlbum(function(data) {
+					if (data.success) {
+						$('#random-albums-content').html('');
+						data.albums.forEach(function(a) {
+							$('#random-albums-content').append(constuctAlbum(a));
+						});
+					}
+				});
+			};
+			
+			updateRandomContent();
+			
+			setInterval(updateRandomContent, 10000);
+		}
+		
 		$('#splash').fadeOut(500);
 	});
 

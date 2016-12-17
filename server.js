@@ -800,6 +800,7 @@ app.get('/image/:imageId', (req, res) => {
 
     let image = {
       mine: false,
+      id: imageObj.id,
       title: imageObj.title,
       album: imageObj.album,
       tags: imageObj.tags,
@@ -2143,7 +2144,7 @@ app.get('/api/:login/albums', (req, res) => {
 //
 
 // Get random pic
-app.get('/api/random/pictures', (req, res) => {
+app.get('/api/images/random', (req, res) => {
 
   let limit = req.query.limit || 10;
 
@@ -2185,7 +2186,7 @@ app.get('/api/random/pictures', (req, res) => {
 });
 
 // Get random album
-app.get('/api/random/albums', (req, res) => {
+app.get('/api/albums/random', (req, res) => {
 
   let limit = req.query.limit || 10;
 
