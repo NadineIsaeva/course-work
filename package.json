@@ -1,17 +1,18 @@
 {
   "name": "memster",
-  "version": "1.0.1",
-  "description": "Nadya Isaeva course work",
+  "version": "1.0.0",
+  "description": "",
   "main": "server.js",
   "dependencies": {
     "body-parser": "^1.15.2",
-    "ejs": "^2.5.5",
+    "cookie-parser": "^1.4.3",
     "express": "^4.14.0",
-    "mongodb": "^2.2.11",
-    "method-override": "^2.3.7",
-    "uuid": "^3.0.0",
     "multer": "^1.2.0",
-    "password-hash": "^1.2.2"
+    "method-override": "^2.3.7",
+    "mongodb": "^2.2.14",
+    "password-hash": "^1.2.2",
+    "uuid": "^3.0.1",
+    "ejs": "^2.5.5"
   },
   "devDependencies": {},
   "scripts": {
@@ -22,18 +23,7 @@
     "type": "git",
     "url": "git+https://github.com/NadineIsaeva/course-work.git"
   },
-  "keywords": [
-    "Nadya",
-    "Isaeva",
-    "course",
-    "work",
-    "pictures",
-    "mems",
-    "cats",
-    "rest",
-    "mongodb"
-  ],
-  "author": "Nadya Isaeva",
+  "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/NadineIsaeva/course-work/issues"
